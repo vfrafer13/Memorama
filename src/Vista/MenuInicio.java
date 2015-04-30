@@ -5,6 +5,8 @@
  */
 package Vista;
 
+import Controlador.Comunicacion.ControladorComunicacion;
+import Controlador.ControladorJugador.Reglas;
 import Modelo.Carta;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -15,6 +17,7 @@ import javax.swing.JOptionPane;
  */
 public class MenuInicio extends javax.swing.JFrame {
 ControladorReglas ctrlReglas;
+ControladorComunicacion ctrlComunicacion=new ControladorComunicacion();
     /**
      * Creates new form MenuInicio
      */
@@ -64,12 +67,19 @@ ControladorReglas ctrlReglas;
 
     private void btnIniciarJuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarJuegoActionPerformed
         // TODO add your handling code here:
-        if(notificarServidor()){
-            ArrayList<Carta> ordenCartas=null; //ctrlReglas.obtenerReglasJuego();
+        String host=JOptionPane.showInputDialog("Introduca el ip del Servidor");
+        if(this.ctrlComunicacion.notificarServidor(host)){
+            Reglas regla=new Reglas();
+            ArrayList<Carta> ordenCartas=regla.getOrdenCartas(); //ctrlReglas.obtenerReglasJuego();
                     
-            TableroCartas tablero=new TableroCartas(true,null);
-                
+            TableroCartas tablero=new TableroCartas(true,ordenCartas);
             
+            //Cambiar por factory;
+            tablero.ctrlComunicacion=this.ctrlComunicacion;
+
+            tablero.ctrlComunicacion.addObserver(tablero);
+            
+            this.setVisible(false);
         }else{
             JOptionPane.showMessageDialog(this, "El servidor no responde");
         }

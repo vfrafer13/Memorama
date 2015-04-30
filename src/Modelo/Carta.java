@@ -11,5 +11,34 @@ package Modelo;
  */
 public class Carta {
     int id;
-    boolean estaBolteada;
+    
+    boolean estaVolteada;
+
+    public Carta(int num_veces, boolean b) {
+         this.id=num_veces;
+        this.estaVolteada=b;
+    }
+
+    
+    public int getId() {
+        return id;
+    }
+
+  
+    public String getUrlCarta() {
+            String urlCarta="src/images/"+this.id+".jpg";
+        return urlCarta;
+    }
+
+  
+
+    public boolean isEstaBolteada() {
+        return estaVolteada;
+    }
+
+    public void setEstaBolteada(boolean estaBolteada) {
+        this.estaVolteada = estaBolteada;
+    }
+    
+    
 }
