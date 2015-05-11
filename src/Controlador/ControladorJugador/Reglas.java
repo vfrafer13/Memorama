@@ -26,17 +26,19 @@ public class Reglas {
     public ArrayList<Carta> getOrdenCartas() {
        
         ArrayList<Carta> posicionCartas=new ArrayList<Carta>(); 
-        Carta cartaTemporal;
+        Carta cartaNueva;
+        boolean volteada=false;
+        
        for (int idCarta=1;idCarta<=NUM_IMAGENES;idCarta++){
            for (int num_veces=1;num_veces<=NUM_VECES_IMAGEN;num_veces++ ){
-              cartaTemporal=new Carta(idCarta,false);
-               posicionCartas.add(cartaTemporal);
                
-           }
-           
+              cartaNueva=new Carta(idCarta,volteada);
+               posicionCartas.add(cartaNueva);             
+               
+           }         
            
         }
-        System.out.println(posicionCartas.size());
+       
        Collections.shuffle(posicionCartas);
        ordenCartas=posicionCartas;
        
@@ -46,26 +48,14 @@ public class Reglas {
     public Jugador getJugador() {
         return jugador;
     }
-    
-public static void main(String args[]) {
-      // create array list object       
-      ArrayList arrlist = new ArrayList();
-      
-      // populate the list
-      arrlist.add("A");
-      arrlist.add("B");
-      arrlist.add("C");  
-      arrlist.add("C");
-      arrlist.add("C");
-      arrlist.add("d");
-      arrlist.add("e");
-      
-      System.out.println("Initial collection: "+arrlist);
-      
-      // shuffle the list
-      Collections.shuffle(arrlist);
-      
-      System.out.println("Final collection after shuffle: "+arrlist);
-   }    
-    
+     
+    public static void main(String[] args) {
+        Reglas reglas=new Reglas();
+        ArrayList<Carta> ordenCartas=reglas.getOrdenCartas();
+        for(int i=0;i<100;i++){
+            System.out.println(ordenCartas.get(i).getId());
+            
+        }
+        
+    }
 }
