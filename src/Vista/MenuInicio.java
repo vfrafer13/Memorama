@@ -16,7 +16,6 @@ import javax.swing.JOptionPane;
  * @author x
  */
 public class MenuInicio extends javax.swing.JFrame {
-ControladorReglas ctrlReglas;
 ControladorComunicacion ctrlComunicacion=new ControladorComunicacion();
     /**
      * Creates new form MenuInicio
@@ -69,12 +68,13 @@ ControladorComunicacion ctrlComunicacion=new ControladorComunicacion();
         // TODO add your handling code here:
         String host=JOptionPane.showInputDialog("Introduca el ip del Servidor");
         if(this.ctrlComunicacion.notificarServidor(host)){
-            Reglas regla=new Reglas();
-            ArrayList<Carta> ordenCartas=regla.getOrdenCartas(); //ctrlReglas.obtenerReglasJuego();
+        
+            
+            ArrayList<Carta> ordenCartas=ctrlComunicacion.obtenerReglasJuego();
                     
             TableroCartas tablero=new TableroCartas(true,ordenCartas);
             
-            //Cambiar por factory;
+           
             tablero.ctrlComunicacion=this.ctrlComunicacion;
 
             tablero.ctrlComunicacion.addObserver(tablero);
@@ -123,7 +123,5 @@ ControladorComunicacion ctrlComunicacion=new ControladorComunicacion();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnIniciarJuego;
     // End of variables declaration//GEN-END:variables
-public boolean notificarServidor(){
-    return true;
-}
+
 }
