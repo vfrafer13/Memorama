@@ -5,6 +5,9 @@
  */
 package Controlador.Comunicacion;
 
+import Controlador.ControladorJugador.Reglas;
+import Modelo.Carta;
+import java.util.ArrayList;
 import java.util.Observable;
 
 /**
@@ -14,11 +17,32 @@ import java.util.Observable;
 public class ControladorComunicacion extends Observable {
     ClientSocket clientSocket;
     
+    /*
+    reglasJuego   se debe setiar despues de avisarle al servidor
+    */
+     Reglas reglasJuego=new Reglas();
     public boolean notificarServidor(String host){
+        
     return true;
     }
     
     public void checarMensaje(){
         this.notifyObservers();
     }
+    
+     
+    
+    
+    public ArrayList<Carta> obtenerReglasJuego(){
+       return  this.reglasJuego.getOrdenCartas();
+    }
+
+   
+   
+
+    public void notificarCartasVolteadas(ArrayList<Integer> posicionCartasVolteadas) {
+        
+    }
+
+   
 }

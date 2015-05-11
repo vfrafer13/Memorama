@@ -6,6 +6,7 @@
 package Vista;
 
 import Controlador.Comunicacion.ControladorComunicacion;
+import Controlador.ControladorJugador.Reglas;
 import Modelo.Carta;
 import Modelo.Jugador;
 import java.awt.BorderLayout;
@@ -66,34 +67,37 @@ Jugador jugadorMemorama;
       
     @Override
     public void actionPerformed(ActionEvent e) {
-        
         if(esMiTurno){
-            if(this.numIntechosHechos<2){
-            int idImage=Integer.parseInt(e.getActionCommand());
             
+            if(this.numIntechosHechos<2){
+             
+            int idImage=Integer.parseInt(e.getActionCommand());
+              
             this.posicionCartasVolteadas.add(idImage);
             this.voltearCarta(idImage);
             this.numIntechosHechos++;
-                if(this.numIntechosHechos==2){
-                    this.checarCartasVolteadas();
-                }
+                
             }else{
                 JOptionPane.showMessageDialog(ventanaCartas, "No es tu turno.");
             }
         }else{
             JOptionPane.showMessageDialog(ventanaCartas, "No es tu turno.");
         }
+        if(this.numIntechosHechos==2){
+            this.checarCartasVolteadas();
+        }
         
-      
         
+        
+            
     }
     
     private void MostrarCartas(ArrayList <Carta> ordenCartas){
         this.contenedorCartas = new JPanel(new GridLayout(10, 10, 1 , 1));    
-      
-       
-        for(int i=arregloCartas.length-1; i>=0; i--){//ciclo para crear, añadir, establecer propiedades a los botones
+     
+        for(int i=0; i<arregloCartas.length; i++){//ciclo para crear, añadir, establecer propiedades a los botones
             this.anadirCarta(i,ordenCartas); 
+           
         }
     }
     
@@ -101,6 +105,7 @@ Jugador jugadorMemorama;
         File file;
         ImageIcon imagen;
         if(ordenCartas.get(i).estaBolteada()){
+           
             file =new File (ordenCartas.get(i).getUrlCarta());
             imagen=new ImageIcon(file.getAbsolutePath()); 
         }else{
@@ -115,6 +120,7 @@ Jugador jugadorMemorama;
             arregloCartas[i].setMargin(new Insets(0, 0, 0, 0));
             arregloCartas[i].addActionListener(this);
     }
+    
     private void MostrarGanador(){
         JOptionPane.showMessageDialog(ventanaCartas, "Ganaste");
         ventanaCartas.setVisible(false);
@@ -124,12 +130,24 @@ Jugador jugadorMemorama;
 
    
 private void voltearCarta(int idImage){
+    
         Carta cartaPorVoltear=this.ordenImagenes.get(idImage-1);
+        System.out.println(cartaPorVoltear.getId());
         File file=new File(cartaPorVoltear.getUrlCarta());
         ImageIcon imagen=new ImageIcon(file.getAbsolutePath());
-        System.out.println(file.getAbsolutePath());
-        arregloCartas[idImage-1].setIcon(imagen);
         
+        arregloCartas[idImage-1].setIcon(imagen);
+       
+}
+
+private void desvoltearCarta(int idImage){
+    
+        String defaultCarta="src/images/0.jpg";
+        File file=new File(defaultCarta);
+        ImageIcon imagen=new ImageIcon(file.getAbsolutePath());
+
+        arregloCartas[idImage-1].setIcon(imagen);
+     
 }
 
     @Override
@@ -138,21 +156,33 @@ private void voltearCarta(int idImage){
     }
 
     private void checarCartasVolteadas() {
-        int idPrimeraCarta=this.posicionCartasVolteadas.get(0);
-         int idSegundaCarta=this.posicionCartasVolteadas.get(1);
-         Carta primeraCarta=this.ordenImagenes.get(idPrimeraCarta);
-         Carta segundaCarta=this.ordenImagenes.get(idSegundaCarta);
-                 
-        if(primeraCarta.getId()==segundaCarta.getId()){
-            JOptionPane.showMessageDialog(ventanaCartas,"Es Par");
+    
+        int idPrimeraCarta = this.posicionCartasVolteadas.get(0);       
+        int idSegundaCarta = this.posicionCartasVolteadas.get(1);
+        
+        Carta primeraCarta = this.ordenImagenes.get(idPrimeraCarta-1);
+        Carta segundaCarta = this.ordenImagenes.get(idSegundaCarta-1);
+     
+
+        if (primeraCarta.getId() == segundaCarta.getId()) {
+            if(!(primeraCarta.estaBolteada())&& !(segundaCarta.estaBolteada())){
+            JOptionPane.showMessageDialog(ventanaCartas, "Es Par");
             this.ctrlComunicacion.notificarCartasVolteadas(this.posicionCartasVolteadas);
             this.ordenImagenes.get(idPrimeraCarta).setEstaBolteada(true);
             this.ordenImagenes.get(idSegundaCarta).setEstaBolteada(true);
-            this.posicionCartasVolteadas.clear();
+            JOptionPane.showMessageDialog(ventanaCartas,"Termino turno");
+            }
             
+        }else{
+            JOptionPane.showMessageDialog(ventanaCartas,"Termino turno");
+           this.desvoltearCarta(idPrimeraCarta);
+           this.desvoltearCarta(idSegundaCarta);
+            this.esMiTurno=false;
         }
-        MostrarCartas(ordenImagenes);
+         this.posicionCartasVolteadas.clear();
+        this.numIntechosHechos=0;
+        this.esMiTurno=true;
+        
     }
- 
-    
+  
 }

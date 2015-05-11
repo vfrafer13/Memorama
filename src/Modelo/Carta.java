@@ -11,12 +11,12 @@ package Modelo;
  */
 public class Carta {
     int id;
+    boolean volteada;
+   
     
-    boolean estaVolteada;
-
     public Carta(int num_veces, boolean b) {
          this.id=num_veces;
-        this.estaVolteada=b;
+        this.volteada=b;
     }
 
     
@@ -32,13 +32,23 @@ public class Carta {
 
   
 
-    public boolean isEstaBolteada() {
-        return estaVolteada;
+    public boolean estaBolteada() {
+        return volteada;
     }
 
     public void setEstaBolteada(boolean estaBolteada) {
-        this.estaVolteada = estaBolteada;
+        this.volteada = estaBolteada;
     }
+
+    public boolean isVolteada() {
+        return volteada;
+    }
+
+    public void setVolteada(boolean volteada) {
+        this.volteada = volteada;
+    }
+
+   
     
     
 }
