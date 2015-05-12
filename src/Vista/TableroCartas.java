@@ -5,9 +5,13 @@
  */
 package Vista;
 
-import Controlador.Comunicacion.ControladorComunicacion;
-import Modelo.Carta;
-import Modelo.Jugador;
+
+
+import Client.ClientController;
+import Model.Carta;
+import Model.Jugador;
+import Model.RequestMessage;
+import com.google.gson.Gson;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -34,11 +38,12 @@ private int NUM_CARTAS=100;
 int HEIGHT;
 int WIDTH;
 
-public ControladorComunicacion ctrlComunicacion;
+private ClientController clientController = new ClientController();
 public boolean esMiTurno=false;
 public int numIntechosHechos=0;
-
 public ArrayList<Carta> ordenImagenes;
+public ArrayList<Integer> posicionCartasVolteadas;
+
 JButton []arregloCartas = new JButton[NUM_CARTAS];//arreglo de botones
 JPanel contenedorCartas;
 JFrame ventanaCartas;
@@ -50,6 +55,7 @@ Jugador jugadorMemorama;
         this.ventanaCartas.setLayout(new BorderLayout(10, 20));
         this.ordenImagenes=ordenImagenes;
         this.esMiTurno=turno;
+        this.posicionCartasVolteadas=new  ArrayList<Integer>();
           MostrarCartas(ordenImagenes);
         
         ventanaCartas.add(this.contenedorCartas, BorderLayout.NORTH);
@@ -58,72 +64,148 @@ Jugador jugadorMemorama;
         ventanaCartas.setVisible(true);
         ventanaCartas.setResizable(true);
         ventanaCartas.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        
-        
-        
-        
+                           
     }
     
       
     @Override
     public void actionPerformed(ActionEvent e) {
         if(esMiTurno){
+            
             if(this.numIntechosHechos<2){
+             
             int idImage=Integer.parseInt(e.getActionCommand());
+              
+            this.posicionCartasVolteadas.add(idImage);
             this.voltearCarta(idImage);
             this.numIntechosHechos++;
+                
             }else{
                 JOptionPane.showMessageDialog(ventanaCartas, "No es tu turno.");
             }
         }else{
             JOptionPane.showMessageDialog(ventanaCartas, "No es tu turno.");
         }
+        if(this.numIntechosHechos==2){
+            this.checarCartasVolteadas();
+        }
         
-      
         
+        
+            
     }
     
-    private void MostrarCartas(ArrayList <Carta> cartasVolteadas){
-        this.contenedorCartas = new JPanel(new GridLayout(10, 10, 2, 2));
-        this.contenedorCartas.removeAll();
-        int idImage=25;
-        File file;
-        ImageIcon imagen;
-       
-        for(int i=arregloCartas.length-1; i>=0; i--){//ciclo para crear, añadir, establecer propiedades a los botones
-            file =new File (cartasVolteadas.get(i).getUrlCarta());
-            imagen=new ImageIcon(file.getAbsolutePath());  
-            arregloCartas[i] = new JButton("" + (i + 1), imagen);
-            arregloCartas[i].setSize(50, 50);
-            this.contenedorCartas.add(arregloCartas[i]);
-            arregloCartas[i].setMargin(new Insets(0, 0, 0, 0));
-            arregloCartas[i].addActionListener(this);
-            
-         
-            
+    private void MostrarCartas(ArrayList <Carta> ordenCartas){
+        this.contenedorCartas = new JPanel(new GridLayout(10, 10, 1 , 1));    
+     
+        for(int i=0; i<arregloCartas.length; i++){//ciclo para crear, añadir, establecer propiedades a los botones
+            this.anadirCarta(i,ordenCartas); 
+           
         }
     }
     
+    private void anadirCarta(int i,ArrayList <Carta> ordenCartas){
+        File file;
+        ImageIcon imagen;
+        if(ordenCartas.get(i).estaBolteada()){
+           
+            file =new File (ordenCartas.get(i).getUrlCarta());
+            imagen=new ImageIcon(file.getAbsolutePath()); 
+        }else{
+            String defaultCarta="src/images/0.jpg";
+            file=new File(defaultCarta);
+            imagen=new ImageIcon(file.getAbsolutePath()); 
+        }
+        
+            arregloCartas[i] = new JButton("" + (i + 1), imagen);
+            arregloCartas[i].setSize(40, 40);
+            this.contenedorCartas.add(arregloCartas[i]);
+            arregloCartas[i].setMargin(new Insets(0, 0, 0, 0));
+            arregloCartas[i].addActionListener(this);
+    }
     
     private void MostrarGanador(){
-    
+        JOptionPane.showMessageDialog(ventanaCartas, "Ganaste");
+        ventanaCartas.setVisible(false);
+        MenuInicio inicio=new MenuInicio();
+        inicio.setVisible(true);
     }
 
    
 private void voltearCarta(int idImage){
+    
         Carta cartaPorVoltear=this.ordenImagenes.get(idImage-1);
+        System.out.println(cartaPorVoltear.getId());
         File file=new File(cartaPorVoltear.getUrlCarta());
         ImageIcon imagen=new ImageIcon(file.getAbsolutePath());
-        System.out.println(file.getAbsolutePath());
-        arregloCartas[idImage-1].setIcon(imagen);
         
+        arregloCartas[idImage-1].setIcon(imagen);
+       
 }
 
-    @Override
-    public void update(Observable o, Object arg) {
+private void desvoltearCarta(int idImage){
+    
+        String defaultCarta="src/images/0.jpg";
+        File file=new File(defaultCarta);
+        ImageIcon imagen=new ImageIcon(file.getAbsolutePath());
+
+        arregloCartas[idImage-1].setIcon(imagen);
+     
+}
+
+    public void update(String msg) {
+        Gson gson = new Gson();
+        System.out.println("Mensaje update " + msg);
+        RequestMessage reqMsg = gson.fromJson(msg, RequestMessage.class);
+        switch (reqMsg.getMessageType()) {
+            case RequestMessage.ACTUALIZAR_CARTA_JUGADA: {
+                String data1 = reqMsg.getData1();
+                String data2 = reqMsg.getData2();
+
+                Carta carta = gson.fromJson(data1, Carta.class);
+                Jugador jugador = gson.fromJson(data2, Jugador.class);
+
+                int pos = carta.getPosicion();
+                voltearCarta(pos);
+                }
+            }
+    }
+
+    private void checarCartasVolteadas() {
+    
+        int idPrimeraCarta = this.posicionCartasVolteadas.get(0);
+        System.out.println(idPrimeraCarta);
+ 
+        int idSegundaCarta = this.posicionCartasVolteadas.get(1);
+        
+        Carta primeraCarta = this.ordenImagenes.get(idPrimeraCarta-1);
+        Carta segundaCarta = this.ordenImagenes.get(idSegundaCarta-1);
+     
+        clientController.posicionCartaJugada(primeraCarta, jugadorMemorama);
+        if (primeraCarta.getId() == segundaCarta.getId()) {
+            if(!(primeraCarta.estaBolteada())&& !(segundaCarta.estaBolteada())){
+            JOptionPane.showMessageDialog(ventanaCartas, "Es Par");
+            //this.ctrlComunicacion.notificarCartasVolteadas(this.posicionCartasVolteadas);
+            this.ordenImagenes.get(idPrimeraCarta).setEstaBolteada(true);
+            this.ordenImagenes.get(idSegundaCarta).setEstaBolteada(true);
+            JOptionPane.showMessageDialog(ventanaCartas,"Termino turno");
+            }
+            
+        }else{
+            JOptionPane.showMessageDialog(ventanaCartas,"Termino turno");
+           this.desvoltearCarta(idPrimeraCarta);
+           this.desvoltearCarta(idSegundaCarta);
+            this.esMiTurno=false;
+        }
+         this.posicionCartasVolteadas.clear();
+        this.numIntechosHechos=0;
+        this.esMiTurno=true;
         
     }
- 
-    
+
+    @Override
+    public void update(Observable o, Object o1) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+  
 }
