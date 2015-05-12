@@ -14,7 +14,11 @@ import java.util.ArrayList;
  * @author x
  */
 public class MenuInicio extends javax.swing.JFrame {
+<<<<<<< HEAD
 ClientController ctrlCliente = new ClientController();
+=======
+ControladorComunicacion ctrlComunicacion=new ControladorComunicacion();
+>>>>>>> origin/master
     /**
      * Creates new form MenuInicio
      */
@@ -64,9 +68,29 @@ ClientController ctrlCliente = new ClientController();
 
     private void btnIniciarJuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarJuegoActionPerformed
         // TODO add your handling code here:
+<<<<<<< HEAD
         ArrayList<Carta> ordenCartas = ctrlCliente.obtenerTablero();
         new TableroCartas(true,ordenCartas);
         this.setVisible(false);
+=======
+        String host=JOptionPane.showInputDialog("Introduca el ip del Servidor");
+        if(this.ctrlComunicacion.notificarServidor(host)){
+        
+            
+            ArrayList<Carta> ordenCartas=ctrlComunicacion.obtenerReglasJuego();
+                    
+            TableroCartas tablero=new TableroCartas(true,ordenCartas);
+            
+           
+            tablero.ctrlComunicacion=this.ctrlComunicacion;
+
+            tablero.ctrlComunicacion.addObserver(tablero);
+            
+            this.setVisible(false);
+        }else{
+            JOptionPane.showMessageDialog(this, "El servidor no responde");
+        }
+>>>>>>> origin/master
     }//GEN-LAST:event_btnIniciarJuegoActionPerformed
 
     /**

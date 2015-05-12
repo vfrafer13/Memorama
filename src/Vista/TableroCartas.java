@@ -5,6 +5,7 @@
  */
 package Vista;
 
+<<<<<<< HEAD
 
 
 import Client.ClientController;
@@ -12,6 +13,12 @@ import Model.Carta;
 import Model.Jugador;
 import Model.RequestMessage;
 import com.google.gson.Gson;
+=======
+import Controlador.Comunicacion.ControladorComunicacion;
+import Controlador.ControladorJugador.Reglas;
+import Modelo.Carta;
+import Modelo.Jugador;
+>>>>>>> origin/master
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -93,6 +100,7 @@ Jugador jugadorMemorama;
         
         
             
+<<<<<<< HEAD
     }
     
     private void MostrarCartas(ArrayList <Carta> ordenCartas){
@@ -104,6 +112,19 @@ Jugador jugadorMemorama;
         }
     }
     
+=======
+    }
+    
+    private void MostrarCartas(ArrayList <Carta> ordenCartas){
+        this.contenedorCartas = new JPanel(new GridLayout(10, 10, 1 , 1));    
+     
+        for(int i=0; i<arregloCartas.length; i++){//ciclo para crear, añadir, establecer propiedades a los botones
+            this.anadirCarta(i,ordenCartas); 
+           
+        }
+    }
+    
+>>>>>>> origin/master
     private void anadirCarta(int i,ArrayList <Carta> ordenCartas){
         File file;
         ImageIcon imagen;
@@ -141,6 +162,19 @@ private void voltearCarta(int idImage){
         
         arregloCartas[idImage-1].setIcon(imagen);
        
+<<<<<<< HEAD
+=======
+}
+
+private void desvoltearCarta(int idImage){
+    
+        String defaultCarta="src/images/0.jpg";
+        File file=new File(defaultCarta);
+        ImageIcon imagen=new ImageIcon(file.getAbsolutePath());
+
+        arregloCartas[idImage-1].setIcon(imagen);
+     
+>>>>>>> origin/master
 }
 
 private void desvoltearCarta(int idImage){
@@ -173,19 +207,31 @@ private void desvoltearCarta(int idImage){
 
     private void checarCartasVolteadas() {
     
+<<<<<<< HEAD
         int idPrimeraCarta = this.posicionCartasVolteadas.get(0);
         System.out.println(idPrimeraCarta);
  
+=======
+        int idPrimeraCarta = this.posicionCartasVolteadas.get(0);       
+>>>>>>> origin/master
         int idSegundaCarta = this.posicionCartasVolteadas.get(1);
         
         Carta primeraCarta = this.ordenImagenes.get(idPrimeraCarta-1);
         Carta segundaCarta = this.ordenImagenes.get(idSegundaCarta-1);
      
+<<<<<<< HEAD
         clientController.posicionCartaJugada(primeraCarta, jugadorMemorama);
         if (primeraCarta.getId() == segundaCarta.getId()) {
             if(!(primeraCarta.estaBolteada())&& !(segundaCarta.estaBolteada())){
             JOptionPane.showMessageDialog(ventanaCartas, "Es Par");
             //this.ctrlComunicacion.notificarCartasVolteadas(this.posicionCartasVolteadas);
+=======
+
+        if (primeraCarta.getId() == segundaCarta.getId()) {
+            if(!(primeraCarta.estaBolteada())&& !(segundaCarta.estaBolteada())){
+            JOptionPane.showMessageDialog(ventanaCartas, "Es Par");
+            this.ctrlComunicacion.notificarCartasVolteadas(this.posicionCartasVolteadas);
+>>>>>>> origin/master
             this.ordenImagenes.get(idPrimeraCarta).setEstaBolteada(true);
             this.ordenImagenes.get(idSegundaCarta).setEstaBolteada(true);
             JOptionPane.showMessageDialog(ventanaCartas,"Termino turno");
@@ -202,10 +248,13 @@ private void desvoltearCarta(int idImage){
         this.esMiTurno=true;
         
     }
+<<<<<<< HEAD
 
     @Override
     public void update(Observable o, Object o1) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+=======
+>>>>>>> origin/master
   
 }
